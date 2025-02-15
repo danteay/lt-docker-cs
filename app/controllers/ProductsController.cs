@@ -14,7 +14,7 @@ namespace app.controllers
 {
     [Route("/api/products")]
     [ApiController]
-    public class ProductsController(IProductService srvProducts): ControllerBase
+    public class ProductsController(IProductService srvProducts) : ControllerBase
     {
         [HttpGet("all")]
         public async Task<ActionResult<GetAllResponse>> GetAll()

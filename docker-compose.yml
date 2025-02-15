@@ -11,7 +11,7 @@ services:
     volumes:
       - ./data/postgres:/var/lib/postgresql/data
     networks:
-      - app-network
+      - app-dotnet
 
   app:
     build:
@@ -29,8 +29,8 @@ services:
     depends_on:
       - postgres
     networks:
-      - app-network
+      - app-dotnet
 
 networks:
-  app-network:
+  app-dotnet:
     driver: bridge

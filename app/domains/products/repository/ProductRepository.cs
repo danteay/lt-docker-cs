@@ -10,7 +10,7 @@ namespace app.domains.products.repository
 {
     public class ProductNotFoundException(string message) : Exception(message);
 
-    public class ProductRepository(PostgresDbContext dbContext): IProductRepository
+    public class ProductRepository(PostgresDbContext dbContext) : IProductRepository
     {
         public Task<List<Product>> GetAllAsync()
         {

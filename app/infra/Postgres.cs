@@ -9,11 +9,15 @@ namespace app.infra
     /// Class that represents the Postgres database context. It is responsible for managing the database
     /// connections and the entities that will be stored in the database.
     /// </summary>
-    /// <param name="options">Context options for the database connection</param>
-    public class PostgresDbContext(DbContextOptions<PostgresDbContext> options) : DbContext(options)
+    public class PostgresDbContext : DbContext
     {
         public DbSet<User> Users { get; set; }
         public DbSet<Product> Products { get; set; }
+
+        public PostgresDbContext(DbContextOptions<PostgresDbContext> options)
+        {
+            SecretsManager.GetInstance.Initialize();
+        }
 
         /// <summary>
         /// Register domain classes as tables in the database.

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace app.domains.products.service
 {
-    public class ProductService(IProductRepository repo): IProductService
+    public class ProductService(IProductRepository repo) : IProductService
     {
         public Task<List<Product>> GetAllAsync()
         {

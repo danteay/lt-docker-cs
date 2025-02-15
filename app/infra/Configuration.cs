@@ -11,12 +11,12 @@ namespace app.infra
     /// </summary>
     public class Configuration
     {
-        private readonly static Lazy<Configuration> Instance = new Lazy<Configuration>(() => new Configuration());
+        private readonly static Lazy<Configuration> instance = new Lazy<Configuration>(() => new Configuration());
         private IConfigurationRoot? _config;
 
         private Configuration() { }
 
-        public static Configuration GetInstance => Instance.Value;
+        public static Configuration GetInstance => instance.Value;
 
         /// <summary>
         /// From the loaded configuration, returns a dictionary with all the key-value pairs
@@ -57,6 +57,8 @@ namespace app.infra
                 .AddYamlFile($"config/{DefaultEnvs.Stage}.yml", optional: false, reloadOnChange: false)
                 .AddEnvironmentVariables()
                 .Build();
+
+            Console.WriteLine($"NAME env: {Environment.GetEnvironmentVariable("NAME")}");
         }
 
     }

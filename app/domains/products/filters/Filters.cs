@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace app.domains.products.filters
 {
-    public class Filters: IFilters<Product>
+    public class Filters : IFilters<Product>
     {
         private const int _maxPageSize = 100;
         private int _pageNumber { get; set; } = 1;

@@ -6,6 +6,7 @@ using app.domains.users.service;
 using app.domains.users.repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -51,8 +52,6 @@ namespace app.infra
 
             _builder.Configuration.Sources.Clear();
             _builder.Configuration.AddInMemoryCollection(Configuration.GetInstance.ToDictionary()!);
-
-            SecretsManager.GetInstance.Initialize();
         }
 
         /// <summary>

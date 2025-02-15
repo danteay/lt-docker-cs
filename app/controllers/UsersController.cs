@@ -1,5 +1,6 @@
 using app.controllers.dtos.users;
 using app.domains.users.service;
+using app.infra;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
@@ -134,6 +135,12 @@ namespace app.controllers
             if (!result)
                 return NotFound();
             return NoContent();
+        }
+
+        [HttpGet("hello")]
+        public string Hello()
+        {
+            return $"Hello, World! {Configuration.GetInstance.Get("NAME_USER")}";
         }
     }
 }

@@ -1,0 +1,36 @@
+name: Pull Request Actions
+
+on:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Install Net Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+          
+      - name: Execute tests
+        run: dotnet test app.tests/app.tests.csproj
+        
+  
+#  lint_code:
+#    runs-on: ubuntu-22.04
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v4
+#        
+#      - name: Install Net Core
+#        uses: actions/setup-dotnet@v4
+#        with:
+#          dotnet-version: 9.0.x
+#          
+#      - name: Execute lint
+#        run: dotnet format --check app/app.csproj
+    
+    
