@@ -43,7 +43,7 @@ namespace app.controllers
                 }
             };
 
-            return Ok(response);
+            return Ok();
         }
 
         /// <summary>
