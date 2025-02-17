@@ -34,6 +34,6 @@ jobs:
         run: dotnet tool restore
         
       - name: Execute csharpier
-        run: dotnet csharpier --check --ignore .gitignore --ignore .github --ignore .vscode --ignore .vs --ignore bin --ignore obj --ignore app/wwwroot app/**/*.cs 
+        run: dotnet dotnet-csharpier .  
     
     
