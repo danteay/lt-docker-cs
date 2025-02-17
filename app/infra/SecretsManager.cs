@@ -21,7 +21,7 @@ namespace app.infra
     /// </summary>
     public class SecretsManager
     {
-        private static readonly Lazy<SecretsManager> Instance = new Lazy<SecretsManager>(
+        private readonly static Lazy<SecretsManager> Instance = new Lazy<SecretsManager>(
             () => new SecretsManager()
         );
         private Dictionary<string, string>? _secrets;
