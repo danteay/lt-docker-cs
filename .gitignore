@@ -4,3 +4,6 @@ Debug/
 **/publish/
 **/*.sln
 **/obj/
+.idea/
+.vscode/
+DS_Store
