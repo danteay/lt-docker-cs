@@ -19,18 +19,21 @@ jobs:
         run: dotnet test app.tests/app.tests.csproj
         
   
-#  lint_code:
-#    runs-on: ubuntu-22.04
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v4
-#        
-#      - name: Install Net Core
-#        uses: actions/setup-dotnet@v4
-#        with:
-#          dotnet-version: 9.0.x
-#          
-#      - name: Execute lint
-#        run: dotnet format --check app/app.csproj
+  lint_code:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Net Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Restore tools
+        run: dotnet tool restore
+        
+      - name: Execute csharpier
+        run: dotnet csharpier --check --ignore .gitignore --ignore .github --ignore .vscode --ignore .vs --ignore bin --ignore obj --ignore app/wwwroot app/**/*.cs 
     
     
