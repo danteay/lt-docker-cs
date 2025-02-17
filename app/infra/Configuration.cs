@@ -7,7 +7,7 @@ namespace app.infra
     /// </summary>
     public class Configuration
     {
-        private static readonly Lazy<Configuration> Instance = new Lazy<Configuration>(
+        private readonly static Lazy<Configuration> Instance = new Lazy<Configuration>(
             () => new Configuration()
         );
         private IConfigurationRoot? _config;

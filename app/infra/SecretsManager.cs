@@ -21,28 +21,14 @@ namespace app.infra
     /// </summary>
     public class SecretsManager
     {
-        private static readonly Lazy<Dictionary<string, Lazy<SecretsManager>>> Instance = new Lazy<
-            Dictionary<string, Lazy<SecretsManager>>
-        >(new Dictionary<string, Lazy<SecretsManager>>());
-        
+        private readonly static Lazy<SecretsManager> Instance = new Lazy<SecretsManager>(
+            () => new SecretsManager()
+        );
         private Dictionary<string, string>? _secrets;
-        private readonly string _secretName;
 
-        private SecretsManager(string secretName)
-        {
-            _secretName = secretName;
-        }
+        private SecretsManager() { }
 
-        public static SecretsManager GetInstance(string secret)
-        {
-            if (Instance.Value.TryGetValue(secret, out var get))
-                return get.Value;
-            
-            get = new Lazy<SecretsManager>(() => new SecretsManager(secret));
-            Instance.Value[secret] = get;
-
-            return get.Value;
-        }
+        public static SecretsManager GetInstance => Instance.Value;
 
         /// <summary>
         /// Initialize the secrets manager by fetching secrets from the Phase API if the environment stage is not local.
@@ -56,7 +42,7 @@ namespace app.infra
                 "dev" => "development",
                 "staging" => "staging",
                 "prod" => "production",
-                _ => "local"
+                _ => "local",
             };
 
             if (env == "local")
@@ -73,7 +59,7 @@ namespace app.infra
         {
             var config = Configuration.GetInstance;
 
-            var appId = _secretName;
+            var appId = config.Get("PHASE_APP_ID") ?? "";
             var apiKey = config.Get("PHASE_API_KEY") ?? "";
 
             var httpClient = new HttpClient();
