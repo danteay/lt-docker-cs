@@ -1,7 +1,5 @@
 using app.domains.products.filters;
 using app.lib.pagination;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace app.domains.products.repository
 {

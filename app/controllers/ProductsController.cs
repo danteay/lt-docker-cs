@@ -6,9 +6,6 @@ using app.domains.products.repository;
 using app.domains.products.service;
 using app.lib.pagination;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace app.controllers
 {
@@ -22,13 +19,15 @@ namespace app.controllers
             var products = await srvProducts.GetAllAsync();
             var response = new GetAllResponse
             {
-                Items = products.Select(p => new ProductItem
-                {
-                    Id = p.Id,
-                    Name = p.Name,
-                    Sku = p.Sku,
-                    Price = p.Price
-                }).ToList()
+                Items = products
+                    .Select(p => new ProductItem
+                    {
+                        Id = p.Id,
+                        Name = p.Name,
+                        Sku = p.Sku,
+                        Price = p.Price,
+                    })
+                    .ToList(),
             };
 
             return Ok(response);
@@ -48,7 +47,7 @@ namespace app.controllers
                     Id = product.Id,
                     Name = product.Name,
                     Sku = product.Sku,
-                    Price = product.Price
+                    Price = product.Price,
                 };
 
                 return Ok(response);
@@ -68,17 +67,23 @@ namespace app.controllers
         public async Task<ActionResult<PaginationResult<ProductItem>>> Search(
             [FromQuery] Filters filters,
             [FromQuery] int limit = 10,
-            [FromQuery] int page = 1)
+            [FromQuery] int page = 1
+        )
         {
-            var result = await srvProducts.SearchAsync(filters.SetPageSize(limit).SetPageNumber(page));
+            var result = await srvProducts.SearchAsync(
+                filters.SetPageSize(limit).SetPageNumber(page)
+            );
 
-            var transformed = TransformResult<Product, ProductItem>.Apply(result, p => new ProductItem
-            {
-                Id = p.Id,
-                Name = p.Name,
-                Sku = p.Sku,
-                Price = p.Price
-            });
+            var transformed = TransformResult<Product, ProductItem>.Apply(
+                result,
+                p => new ProductItem
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Sku = p.Sku,
+                    Price = p.Price,
+                }
+            );
 
             return Ok(transformed);
         }
@@ -90,7 +95,7 @@ namespace app.controllers
             {
                 Name = request.Name,
                 Price = request.Price,
-                Sku = ""
+                Sku = "",
             };
 
             var created = await srvProducts.CreateAsync(product);
@@ -99,7 +104,7 @@ namespace app.controllers
                 Id = created.Id,
                 Name = created.Name,
                 Sku = created.Sku,
-                Price = created.Price
+                Price = created.Price,
             };
 
             return Ok(response);
@@ -117,7 +122,7 @@ namespace app.controllers
                     Id = updated.Id,
                     Name = updated.Name,
                     Sku = updated.Sku,
-                    Price = updated.Price
+                    Price = updated.Price,
                 };
 
                 return Ok(response);
@@ -140,11 +145,7 @@ namespace app.controllers
             {
                 await srvProducts.DeleteAsync(id);
 
-                var response = new DeleteResponse
-                {
-                    Id = id,
-                    Deleted = true
-                };
+                var response = new DeleteResponse { Id = id, Deleted = true };
 
                 return Ok(response);
             }

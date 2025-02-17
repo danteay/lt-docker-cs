@@ -8,9 +8,12 @@ namespace app.domains.products.filters
 
         public void Apply(ref Product product)
         {
-            if (!string.IsNullOrEmpty(Name)) product.Name = Name;
-            if (!string.IsNullOrEmpty(Sku)) product.Sku = Sku;
-            if (Price.HasValue) product.Price = Price.Value;
+            if (!string.IsNullOrEmpty(Name))
+                product.Name = Name;
+            if (!string.IsNullOrEmpty(Sku))
+                product.Sku = Sku;
+            if (Price.HasValue)
+                product.Price = Price.Value;
         }
     }
 }

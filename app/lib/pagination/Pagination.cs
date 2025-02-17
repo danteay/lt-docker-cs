@@ -1,8 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace app.lib.pagination
 {
@@ -29,18 +25,19 @@ namespace app.lib.pagination
         {
             var query = Filters.Apply(Query);
             var total = await query.CountAsync();
-            var pageSize = Filters.PageSize() > Filters.MaxPageSize() ? Filters.MaxPageSize() : Filters.PageSize();
+            var pageSize =
+                Filters.PageSize() > Filters.MaxPageSize()
+                    ? Filters.MaxPageSize()
+                    : Filters.PageSize();
             var totalPages = (int)Math.Ceiling(total / (double)pageSize);
             var currentPage = Filters.PageNumber() < 1 ? 1 : Filters.PageNumber();
             currentPage = currentPage > totalPages ? totalPages : currentPage;
 
             var offset = (currentPage - 1) * pageSize;
-            if (offset < 0) offset = 0;
+            if (offset < 0)
+                offset = 0;
 
-            var items = await Filters.Apply(Query)
-                .Skip(offset)
-                .Take(pageSize)
-                .ToListAsync();
+            var items = await Filters.Apply(Query).Skip(offset).Take(pageSize).ToListAsync();
 
             return new PaginationResult<T>
             {
@@ -50,20 +47,20 @@ namespace app.lib.pagination
                     PageNumber = currentPage,
                     PageSize = pageSize,
                     TotalCount = total,
-                    TotalPages = totalPages
-                }
+                    TotalPages = totalPages,
+                },
             };
         }
     }
 
-    public class TransformResult<T, TU>
+    public abstract class TransformResult<T, TU>
     {
         public static PaginationResult<TU> Apply(PaginationResult<T> got, Func<T, TU> selectFunc)
         {
             return new PaginationResult<TU>
             {
                 Items = got.Items.Select(selectFunc),
-                Metadata = got.Metadata
+                Metadata = got.Metadata,
             };
         }
     }

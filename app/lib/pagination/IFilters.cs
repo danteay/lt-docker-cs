@@ -1,5 +1,3 @@
-using System.Linq;
-
 namespace app.lib.pagination
 {
     public interface IFilters<T>

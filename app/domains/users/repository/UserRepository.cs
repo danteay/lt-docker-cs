@@ -1,7 +1,5 @@
 using app.infra;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace app.domains.users.repository
 {

@@ -1,12 +1,12 @@
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using app.controllers;
 using app.controllers.dtos.users;
 using app.domains.users;
 using app.domains.users.service;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace app.tests.controllers
@@ -28,9 +28,24 @@ namespace app.tests.controllers
             // Arrange
             var users = new List<User>
             {
-                new User { Id = 1, Name = "User1", Email = "user1@example.com" },
-                new User { Id = 2, Name = "User2", Email = "user2@example.com" },
-                new User { Id = 3, Name = "User3", Email = "user3@example.com" }
+                new User
+                {
+                    Id = 1,
+                    Name = "User1",
+                    Email = "user1@example.com",
+                },
+                new User
+                {
+                    Id = 2,
+                    Name = "User2",
+                    Email = "user2@example.com",
+                },
+                new User
+                {
+                    Id = 3,
+                    Name = "User3",
+                    Email = "user3@example.com",
+                },
             };
             _mockUserService.Setup(service => service.GetAllAsync()).ReturnsAsync(users);
 

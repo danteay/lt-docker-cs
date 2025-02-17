@@ -14,15 +14,14 @@ namespace app.Migrations
                 name: "IX_users_Email",
                 table: "users",
                 column: "Email",
-                unique: true);
+                unique: true
+            );
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropIndex(
-                name: "IX_users_Email",
-                table: "users");
+            migrationBuilder.DropIndex(name: "IX_users_Email", table: "users");
         }
     }
 }

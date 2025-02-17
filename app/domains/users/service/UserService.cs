@@ -1,6 +1,4 @@
 using app.domains.users.repository;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace app.domains.users.service
 {

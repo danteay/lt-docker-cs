@@ -2,15 +2,13 @@ using app.controllers.dtos.users;
 using app.domains.users.service;
 using app.infra;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace app.controllers
 {
     /// <summary>
     /// Controller for managing users.
     /// </summary>
-    [Route("api/[controller]")]
+    [Route("api/users")]
     [ApiController]
     public class UsersController(IUserService userService) : ControllerBase
     {
@@ -29,8 +27,9 @@ namespace app.controllers
                 {
                     Id = u.Id,
                     Name = u.Name,
-                    Email = u.Email
-                }).ToList();
+                    Email = u.Email,
+                })
+                .ToList();
 
             var response = new UserListResponse
             {
@@ -39,8 +38,8 @@ namespace app.controllers
                 {
                     Total = users.Count,
                     Page = page,
-                    PageSize = pageSize
-                }
+                    PageSize = pageSize,
+                },
             };
 
             return Ok(response);
@@ -62,7 +61,7 @@ namespace app.controllers
             {
                 Id = user.Id,
                 Name = user.Name,
-                Email = user.Email
+                Email = user.Email,
             };
 
             return Ok(userResponse);
@@ -76,11 +75,7 @@ namespace app.controllers
         [HttpPost]
         public async Task<ActionResult<UserResponse>> Create([FromBody] UserRequest request)
         {
-            var user = new app.domains.users.User
-            {
-                Name = request.Name,
-                Email = request.Email
-            };
+            var user = new app.domains.users.User { Name = request.Name, Email = request.Email };
 
             var createdUser = await userService.CreateAsync(user);
 
@@ -88,7 +83,7 @@ namespace app.controllers
             {
                 Id = createdUser.Id,
                 Name = createdUser.Name,
-                Email = createdUser.Email
+                Email = createdUser.Email,
             };
 
             return CreatedAtAction(nameof(GetById), new { id = userResponse.Id }, userResponse);
@@ -103,11 +98,7 @@ namespace app.controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<UserResponse>> Update(int id, [FromBody] UserRequest request)
         {
-            var user = new app.domains.users.User
-            {
-                Name = request.Name,
-                Email = request.Email
-            };
+            var user = new app.domains.users.User { Name = request.Name, Email = request.Email };
 
             var updatedUser = await userService.UpdateAsync(id, user);
             if (updatedUser == null)
@@ -117,7 +108,7 @@ namespace app.controllers
             {
                 Id = updatedUser.Id,
                 Name = updatedUser.Name,
-                Email = updatedUser.Email
+                Email = updatedUser.Email,
             };
 
             return Ok(userResponse);

@@ -8,8 +8,9 @@ migraciones instalando `dotnet-ef` localmente en el proyecto usando `.config`.
 - [Nix](https://nixos.org/download.html) installed
 - [Nix Flakes](https://nixos.wiki/wiki/Flakes) enabled
 - [Docker](https://www.docker.com/get-started) installed
+- [Phase.dev](https://phase.dev) account to mange secrets
 
-## Steps
+## Steps 
 
 ### 1. Inicializar el proyecto .NET Core usando Nix
 
@@ -24,7 +25,7 @@ nix develop
 Este projecto usa postgres como base de datos. Para configurar un contenedor Docker para la base de datos, ejecuta el siguiente comando:
 
 ```sh
-docker-compose up -d
+docker-compose up postgres -d
 ```
 
 ### 3. Instalar `dotnet-ef` localmente
@@ -51,4 +52,14 @@ Para ejecutar el pryecto localmente fuera de docker, ejecuta el siguiente comand
 dotnet run
 ```
 
-Podras ver el proyecto corriendo en `http://localhost:5000`, y la documentación de la API en `http://localhost:5000/swagger`.
+Podras ver el proyecto corriendo en `http://localhost:5001`, y la documentación de la API en `http://localhost:5001/swagger`.
+
+## Lint and format
+
+To lint and format code this project use `csharpier`. To execute the linter and formatter, run the following command:
+
+```sh
+dotnet dotnet-csharpier .
+```
+
+

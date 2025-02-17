@@ -1,7 +1,6 @@
 using app.domains.products;
 using app.domains.users;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace app.infra
 {
@@ -48,7 +47,8 @@ namespace app.infra
                 var database = secrets.MustGet("POSTGRES_DB");
                 var port = secrets.MustGet("POSTGRES_PORT");
 
-                connectionString = $"Host={host};Database={database};Username={user};Password={password};Port={port}";
+                connectionString =
+                    $"Host={host};Database={database};Username={user};Password={password};Port={port}";
             }
 
             Console.WriteLine($"Using connection string: {connectionString}");

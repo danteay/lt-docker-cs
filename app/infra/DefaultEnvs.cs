@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace app.infra
 {
     /// <summary>
@@ -22,7 +19,7 @@ namespace app.infra
             {
                 { "SERVICE_NAME", ServiceName },
                 { "PORT", Port },
-                { "STAGE", Stage }
+                { "STAGE", Stage },
             };
         }
     }

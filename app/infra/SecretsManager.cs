@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Json;
-
 namespace app.infra
 {
     /// <summary>
@@ -27,7 +21,9 @@ namespace app.infra
     /// </summary>
     public class SecretsManager
     {
-        private readonly static Lazy<SecretsManager> Instance = new Lazy<SecretsManager>(() => new SecretsManager());
+        private readonly static Lazy<SecretsManager> Instance = new Lazy<SecretsManager>(
+            () => new SecretsManager()
+        );
         private Dictionary<string, string>? _secrets;
 
         private SecretsManager() { }
@@ -46,10 +42,11 @@ namespace app.infra
                 "dev" => "development",
                 "staging" => "staging",
                 "prod" => "production",
-                _ => "local"
+                _ => "local",
             };
 
-            if (env == "local") return;
+            if (env == "local")
+                return;
 
             CallPhaseApi(env);
         }
@@ -68,10 +65,15 @@ namespace app.infra
             var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
 
-            var response = httpClient.GetAsync($"https://api.phase.dev/v1/secrets/?app_id={appId}&env={env}").Result;
+            var response = httpClient
+                .GetAsync($"https://api.phase.dev/v1/secrets/?app_id={appId}&env={env}")
+                .Result;
             var data = response.Content.ReadFromJsonAsync<List<PhaseSecret>>().Result;
 
-            _secrets = data == null ? new Dictionary<string, string>() : data.ToDictionary(x => x.Key, x => x.Value);
+            _secrets =
+                data == null
+                    ? new Dictionary<string, string>()
+                    : data.ToDictionary(x => x.Key, x => x.Value);
         }
 
         /// <summary>
