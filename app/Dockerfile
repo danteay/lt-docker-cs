@@ -1,4 +1,18 @@
 # Stage 1: Build the application
+FROM mcr.microsoft.com/dotnet/sdk:9.0-alpine AS test
+WORKDIR /src
+
+# Copy the project files
+COPY app.csproj .
+RUN dotnet restore
+
+# Copy the rest of the source code
+COPY . .
+
+# Build the application
+RUN dotnet test app.tests/app.tests.csproj
+
+# Stage 1: Build the application
 FROM mcr.microsoft.com/dotnet/sdk:9.0-alpine AS build
 
 WORKDIR /src
