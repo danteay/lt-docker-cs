@@ -23,7 +23,7 @@ services:
     container_name: lt-docker-netcore-app
     environment:
       - PHASE_API_KEY=${PHASE_API_KEY}
-      - PHASE_APP_ID=${PHASE_APP_ID}
+      - POSTGRES_SECRET_NAME=${PHASE_APP_ID}
     ports:
       - "5001:5001"
     depends_on:

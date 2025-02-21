@@ -12,10 +12,15 @@ namespace app.infra
     {
         public DbSet<User> Users { get; set; }
         public DbSet<Product> Products { get; set; }
+        private readonly string _secretName;
 
         public PostgresDbContext(DbContextOptions<PostgresDbContext> options)
         {
-            SecretsManager.GetInstance.Initialize();
+            _secretName = Configuration.GetInstance.Get("POSTGRES_SECRET_NAME") ?? throw new SecretsException(
+                "POSTGRES_SECRET_NAME environment variable is required"
+            );
+
+            SecretsManager.GetInstance(_secretName).Initialize();
         }
 
         /// <summary>
@@ -37,7 +42,7 @@ namespace app.infra
             // Default connection string for local development
             var connectionString = "Host=localhost;Database=postgres;Username=root;Password=root";
 
-            var secrets = SecretsManager.GetInstance;
+            var secrets = SecretsManager.GetInstance(_secretName);
 
             if (Configuration.GetInstance.Get("STAGE") != "local")
             {

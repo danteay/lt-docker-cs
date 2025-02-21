@@ -56,7 +56,8 @@ Podras ver el proyecto corriendo en `http://localhost:5001`, y la documentación
 
 ## Lint and format
 
-To lint and format code this project use `csharpier`. To execute the linter and formatter, run the following command:
+To lint and format code this project use `csharpier`. To execute the linter and formatter, run the following command on 
+the root of the project:
 
 ```sh
 dotnet dotnet-csharpier .

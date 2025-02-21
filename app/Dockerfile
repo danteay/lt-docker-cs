@@ -34,7 +34,7 @@ ENV PORT="${port}"
 
 # Secrets manager credentials
 ENV PHASE_API_KEY=""
-ENV PHASE_APP_ID=""
+ENV POSTGRES_SECRET_NAME=""
 
 # Expose the port your application will run on
 EXPOSE ${port}
