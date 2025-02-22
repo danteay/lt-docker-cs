@@ -4,6 +4,8 @@ using app.domains.products.service;
 using app.domains.users.repository;
 using app.domains.users.service;
 using Microsoft.OpenApi.Models;
+using Serilog;
+using Serilog.Formatting.Compact;
 
 namespace app.infra
 {
@@ -60,6 +62,17 @@ namespace app.infra
 
             // UseUrls after config is loaded
             _builder.WebHost.UseUrls($"http://0.0.0.0:{appPort}");
+        }
+        
+        /// <summary>
+        /// Configure logging using Serilog.
+        /// </summary>
+        private void ConfigureLogging()
+        {
+            Logger.GetInstance.Initialize();
+
+            // Use Serilog for logging
+            _builder.Host.UseSerilog();
         }
 
         /// <summary>
@@ -143,6 +156,7 @@ namespace app.infra
 
             // 2. Now decide how the WebHost is configured (ports, etc.)
             appBuilder.ConfigureWebHost();
+            appBuilder.ConfigureLogging();
 
             // 3. Add rest of the services/middleware
             appBuilder.ConfigureServices();
