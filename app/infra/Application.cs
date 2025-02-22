@@ -63,6 +63,17 @@ namespace app.infra
             // UseUrls after config is loaded
             _builder.WebHost.UseUrls($"http://0.0.0.0:{appPort}");
         }
+        
+        /// <summary>
+        /// Configure logging using Serilog.
+        /// </summary>
+        private void ConfigureLogging()
+        {
+            Logger.GetInstance.Initialize();
+
+            // Use Serilog for logging
+            _builder.Host.UseSerilog();
+        }
 
         /// <summary>
         /// Configure logging using Serilog.
