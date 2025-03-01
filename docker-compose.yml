@@ -67,10 +67,9 @@ services:
         - stage=dev
         - port=5001
         - logstashConfigs=ef36ba7c-ac85-4948-9ded-4a035bfdefad
+        - phaseApiKey=${PHASE_API_KEY}
+        - postgresSecretName=${PHASE_APP_ID}
     container_name: lt-docker-netcore-app
-    environment:
-      - PHASE_API_KEY=${PHASE_API_KEY}
-      - POSTGRES_SECRET_NAME=${PHASE_APP_ID}
     ports:
       - "5001:5001"
     depends_on:

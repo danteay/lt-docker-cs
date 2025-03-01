@@ -47,3 +47,52 @@ jobs:
           tag_name: v${{ env.REVISION }}
           token: ${{ secrets.GITHUB_TOKEN }}
           make_latest: "true"
+          
+  build_docker:
+    runs-on: ubuntu-24.04
+    name: "Build Docker"
+    needs: bump_version
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: "${{ secrets.ACCESS_TOKEN }}"
+          ref: "main"
+          
+      # set aws credentials
+      - name: Set up AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      # build and upload to AWS ECR
+      - name: Login to AWS ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+        with:
+          mask-password: 'true'
+          
+      # get latest tag on repo
+      - name: Get latest tag
+        id: get_tag
+        run: echo "name=$(git describe --tags --abbrev=0)" >> $GITHUB_OUTPUTS
+      
+      - name: Build and push Docker image
+        run: |
+          docker build \
+            --build-arg stage=prod \
+            --build-arg port=5001 \
+            --build-arg logstashConfigs=${{ vars.LOGSTASH_SEC_ID }} \
+            --build-arg phaseApiKey=${{ secret.PHASE_API_KEY }} \
+            --build-arg postgresSecretName=${{ vars.POSTGRES_SEC_ID }} \
+            -t lt-docker-cs .
+          
+            docker tag lt-docker-cs:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/lt-docker-cs:latest
+            docker tag lt-docker-cs:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/lt-docker-cs:${{ steps.get_tag.outputs.name }}
+          
+            docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/lt-docker-cs:latest
+            docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/lt-docker-cs:${{ steps.get_tag.outputs.name }}
+        

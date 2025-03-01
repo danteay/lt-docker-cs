@@ -7,3 +7,4 @@ Debug/
 .idea/
 .vscode/
 DS_Store
+**/.terraform/
