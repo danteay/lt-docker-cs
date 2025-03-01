@@ -81,19 +81,5 @@ jobs:
         run: echo "name=$(git describe --tags --abbrev=0)" >> $GITHUB_OUTPUT
       
       - name: Build and push Docker image
-        working-directory: app
-        run: |
-          docker build \
-            --build-arg stage=prod \
-            --build-arg port=5001 \
-            --build-arg logstashConfigs=${{ vars.LOGSTASH_SEC_ID }} \
-            --build-arg phaseApiKey=${{ secrets.PHASE_API_KEY }} \
-            --build-arg postgresSecretName=${{ vars.POSTGRES_SEC_ID }} \
-            -t lt-docker-cs .
-          
-            docker tag lt-docker-cs:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/lt-docker-cs:latest
-            docker tag lt-docker-cs:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/lt-docker-cs:${{ steps.get_tag.outputs.name }}
-          
-            docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/lt-docker-cs:latest
-            docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/lt-docker-cs:${{ steps.get_tag.outputs.name }}
+        run: bash build.sh
         
