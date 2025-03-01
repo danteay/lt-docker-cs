@@ -86,7 +86,7 @@ jobs:
             --build-arg stage=prod \
             --build-arg port=5001 \
             --build-arg logstashConfigs=${{ vars.LOGSTASH_SEC_ID }} \
-            --build-arg phaseApiKey=${{ secret.PHASE_API_KEY }} \
+            --build-arg phaseApiKey=${{ secrets.PHASE_API_KEY }} \
             --build-arg postgresSecretName=${{ vars.POSTGRES_SEC_ID }} \
             -t lt-docker-cs .
           
