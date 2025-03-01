@@ -30,7 +30,7 @@ namespace app.controllers
                     })
                     .ToList(),
             };
-            
+
             Log.Logger.Warning("Getting all products at once");
 
             return Ok(response);

@@ -76,26 +76,14 @@ namespace app.infra
         }
 
         /// <summary>
-        /// Configure logging using Serilog.
-        /// </summary>
-        private void ConfigureLogging()
-        {
-            Logger.GetInstance.Initialize();
-
-            // Use Serilog for logging
-            _builder.Host.UseSerilog();
-        }
-
-        /// <summary>
         /// Attach services and middlewares to the WebHost.
         /// </summary>
         private void ConfigureServices()
         {
             _builder.Services.AddControllers();
             _builder.Services.AddEndpointsApiExplorer();
-            
-            _builder.Services.AddHealthChecks()
-                .AddCheck<CustomHealthCheck>("custom_health_check");
+
+            _builder.Services.AddHealthChecks().AddCheck<CustomHealthCheck>("custom_health_check");
         }
 
         /// <summary>
@@ -153,7 +141,7 @@ namespace app.infra
 
             app.UseAuthorization();
             app.MapControllers();
-            
+
             app.MapHealthChecks("/.health");
 
             app.Run();

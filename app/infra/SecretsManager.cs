@@ -24,7 +24,7 @@ namespace app.infra
         private static readonly Lazy<Dictionary<string, Lazy<SecretsManager>>> Instance = new Lazy<
             Dictionary<string, Lazy<SecretsManager>>
         >(new Dictionary<string, Lazy<SecretsManager>>());
-        
+
         private Dictionary<string, string>? _secrets;
         private readonly string _secretName;
 
@@ -37,7 +37,7 @@ namespace app.infra
         {
             if (Instance.Value.TryGetValue(secret, out var get))
                 return get.Value;
-            
+
             get = new Lazy<SecretsManager>(() => new SecretsManager(secret));
             Instance.Value[secret] = get;
 
@@ -56,7 +56,7 @@ namespace app.infra
                 "dev" => "development",
                 "staging" => "staging",
                 "prod" => "production",
-                _ => "local"
+                _ => "local",
             };
 
             if (env == "local")

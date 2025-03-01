@@ -6,7 +6,8 @@ namespace app.infra
     {
         public Task<HealthCheckResult> CheckHealthAsync(
             HealthCheckContext context,
-            CancellationToken cancellationToken = default)
+            CancellationToken cancellationToken = default
+        )
         {
             // Add your health check logic here
             var isHealthy = true; // Replace with actual health check logic
