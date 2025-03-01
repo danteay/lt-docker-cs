@@ -20,7 +20,7 @@ WORKDIR /app
 ARG stage="dev"
 ARG port="5000"
 ARG logLevel="INFO"
-ARG logstasgConfigs=""
+ARG logstashConfigs=""
 
 # Copy the published application from the build stage
 COPY --from=build /src/publish .
@@ -39,7 +39,7 @@ ENV LOG_LEVEL="${logLevel}"
 # Secrets manager credentials
 ENV PHASE_API_KEY=""
 ENV POSTGRES_SECRET_NAME=""
-ENV LOGSTASH_CONFIGS="${logstasgConfigs}"
+ENV LOGSTASH_CONFIGS="${logstashConfigs}"
 
 # Expose the port your application will run on
 EXPOSE ${port}

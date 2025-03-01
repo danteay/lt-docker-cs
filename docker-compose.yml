@@ -15,22 +15,36 @@ services:
       - ./data/elasticsearch:/usr/share/elasticsearch/data
     networks:
       - app-dotnet
-
-  logstash:
-    image: docker.elastic.co/logstash/logstash:8.17.1
-    volumes:
-      - ./docker/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
-      - ./docker/logstash/pipeline:/usr/share/logstash/pipeline
-    environment:
-      - ELASTICSEARCH_HOST=http://elasticsearch:9200
-      - ELASTICSEARCH_USERNAME=elastic
-      - ELASTICSEARCH_PASSWORD=elastic
     ports:
-      - "5003:5000"
-    depends_on:
-      - elasticsearch
-    networks:
-      - app-dotnet
+      - "9200:9200"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://elastic:elastic@localhost:9200" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+#  logstash:
+#    image: docker.elastic.co/logstash/logstash:8.17.1
+#    volumes:
+#      - ./docker/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
+#      - ./docker/logstash/pipeline:/usr/share/logstash/pipeline
+#    environment:
+#      - ELASTICSEARCH_HOST=http://elasticsearch:9200
+#      - ELASTICSEARCH_USERNAME=elastic
+#      - ELASTICSEARCH_PASSWORD=elastic
+#    ports:
+#      - "5003:5000"
+#      - "5044:5044"
+#    depends_on:
+#      elasticsearch:
+#        condition: service_healthy
+#    networks:
+#      - app-dotnet
+#    healthcheck:
+#      test: [ "CMD", "curl", "-f", "http://localhost:9600" ]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 5
 
   kibana:
     image: docker.elastic.co/kibana/kibana:8.17.1
@@ -41,7 +55,8 @@ services:
       - ELASTICSEARCH_USERNAME=kibana_user
       - ELASTICSEARCH_PASSWORD=kibana
     depends_on:
-      - elasticsearch
+      elasticsearch:
+        condition: service_healthy
     networks:
       - app-dotnet
         
@@ -61,6 +76,11 @@ services:
       - ./data/postgres:/var/lib/postgresql/data
     networks:
       - app-dotnet
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U root -d postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   app:
     build:
@@ -69,6 +89,7 @@ services:
       args:
         - stage=dev
         - port=5001
+        - logstashConfigs=ef36ba7c-ac85-4948-9ded-4a035bfdefad
     container_name: lt-docker-netcore-app
     environment:
       - PHASE_API_KEY=${PHASE_API_KEY}
@@ -76,7 +97,8 @@ services:
     ports:
       - "5001:5001"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     networks:
       - app-dotnet
 

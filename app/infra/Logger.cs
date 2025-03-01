@@ -1,6 +1,7 @@
 using Serilog;
 using Serilog.Events;
-using Serilog.Formatting.Compact;
+using Serilog.Formatting.Elasticsearch;
+using Serilog.Sinks.Elasticsearch;
 
 namespace app.infra
 {
@@ -18,6 +19,7 @@ namespace app.infra
         {
             var level = Environment.GetEnvironmentVariable("LOG_LEVEL") ?? "INFO";
             var secretName = Environment.GetEnvironmentVariable("LOGSTASH_CONFIGS") ?? "";
+            var stage = Configuration.GetInstance.Get("STAGE");
             
             var minLevel = level switch
             {
@@ -26,25 +28,33 @@ namespace app.infra
                 "WARNING" => LogEventLevel.Warning,
                 _ => LogEventLevel.Information
             };
+            
+            var formatter = new ElasticsearchJsonFormatter(renderMessageTemplate: false, inlineFields: true);
 
             var newLogger = new LoggerConfiguration()
                 .Enrich.FromLogContext()
+                .Enrich.WithProperty("environment", stage)
+                .Enrich.WithProperty("serviceName", Configuration.GetInstance.Get("SERVICE_NAME"))
                 .MinimumLevel.Is(minLevel)
-                .WriteTo.Console(new CompactJsonFormatter());
+                .WriteTo.Console(formatter);
             
             if (Configuration.GetInstance.Get("STAGE") != "local")
             {
-                Console.WriteLine("Running logstash on docker, logging to logstash:5000");
                 // Execution inside container
                 var secrets = SecretsManager.GetInstance(secretName);
-                var logstashHost = secrets.MustGet("HOST");
-                newLogger.WriteTo.Http(requestUri: logstashHost, queueLimitBytes: null);
-            }
-            else
-            {
-                Console.WriteLine("Running logstash locally, logging to localhost:5003");
-                // Execution locally using dotnet run
-                newLogger.WriteTo.Http(requestUri: "http://localhost:5003", queueLimitBytes: null);
+                secrets.Initialize();
+                
+                var elasticHost = secrets.MustGet("ELASTIC_HOST");
+                var elasticUser = secrets.MustGet("ELASTIC_USER");
+                var elasticPassword = secrets.MustGet("ELASTIC_PASSWORD");
+                
+                newLogger.WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(elasticHost))
+                {
+                    AutoRegisterTemplate = true,
+                    AutoRegisterTemplateVersion = AutoRegisterTemplateVersion.ESv8,
+                    IndexFormat = $"logs-{DateTime.UtcNow:yyyy.MM.dd}",
+                    ModifyConnectionSettings = x => x.BasicAuthentication(elasticUser, elasticPassword)
+                });
             }
             
             Log.Logger = newLogger.CreateLogger();
