@@ -17,7 +17,7 @@ migraciones instalando `dotnet-ef` localmente en el proyecto usando `.config`.
 Todas las dependencias del proyecto se gestionarán con Nix. Para inicializar el proyecto .NET Core, ejecuta el siguiente comando:
 
 ```sh
-nix develop
+nix develop --impure
 ```
 
 ### 2. Configurar un contenedor Docker para la base de datos

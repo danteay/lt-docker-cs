@@ -23,29 +23,6 @@ services:
       timeout: 5s
       retries: 5
 
-#  logstash:
-#    image: docker.elastic.co/logstash/logstash:8.17.1
-#    volumes:
-#      - ./docker/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
-#      - ./docker/logstash/pipeline:/usr/share/logstash/pipeline
-#    environment:
-#      - ELASTICSEARCH_HOST=http://elasticsearch:9200
-#      - ELASTICSEARCH_USERNAME=elastic
-#      - ELASTICSEARCH_PASSWORD=elastic
-#    ports:
-#      - "5003:5000"
-#      - "5044:5044"
-#    depends_on:
-#      elasticsearch:
-#        condition: service_healthy
-#    networks:
-#      - app-dotnet
-#    healthcheck:
-#      test: [ "CMD", "curl", "-f", "http://localhost:9600" ]
-#      interval: 10s
-#      timeout: 5s
-#      retries: 5
-
   kibana:
     image: docker.elastic.co/kibana/kibana:8.17.1
     ports:

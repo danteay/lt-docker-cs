@@ -6,6 +6,7 @@ using app.domains.products.repository;
 using app.domains.products.service;
 using app.lib.pagination;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 
 namespace app.controllers
 {
@@ -29,6 +30,8 @@ namespace app.controllers
                     })
                     .ToList(),
             };
+            
+            Log.Logger.Warning("Getting all products at once");
 
             return Ok(response);
         }

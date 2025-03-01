@@ -21,6 +21,12 @@
 
             openssl
             postgresql # to obtain libpq-dev
+            
+            terraform
+            awscli2
+            tflint
+            commitizen
+            husky
           ];
         };
       }
