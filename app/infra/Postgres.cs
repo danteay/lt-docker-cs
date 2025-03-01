@@ -16,9 +16,11 @@ namespace app.infra
 
         public PostgresDbContext(DbContextOptions<PostgresDbContext> options)
         {
-            _secretName = Configuration.GetInstance.Get("POSTGRES_SECRET_NAME") ?? throw new SecretsException(
-                "POSTGRES_SECRET_NAME environment variable is required"
-            );
+            _secretName =
+                Configuration.GetInstance.Get("POSTGRES_SECRET_NAME")
+                ?? throw new SecretsException(
+                    "POSTGRES_SECRET_NAME environment variable is required"
+                );
 
             SecretsManager.GetInstance(_secretName).Initialize();
         }
