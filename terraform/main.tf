@@ -10,7 +10,7 @@ terraform {
 }
 
 provider "aws" {
-  region = "us-east-1" # Set the AWS region to US East (N. Virginia)
+  region = lookup(data.external.env.result, "AWS_REGION", "us-east-1") # Use the AWS_REGION environment variable to set the region
 }
 
 resource "aws_ecr_repository" "lt-docker-cs" {

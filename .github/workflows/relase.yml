@@ -7,6 +7,9 @@ on:
 
 permissions: 
   contents: write
+  
+env:
+  AWS_REGION: ${{ secrets.AWS_REGION }}
 
 jobs:
   bump_version:
@@ -27,8 +30,8 @@ jobs:
         with:
           github_token: ${{ secrets.ACCESS_TOKEN }}
           branch: "main"
-          git_name: danteay
-          git_email: dante.aguilar41@gmail.com
+          git_name: ${{ vars.GIT_NAME }}
+          git_email: ${{ vars.GIT_EMAIL }}
           changelog_increment_filename: body.md
 
       - name: Print Version
@@ -81,5 +84,12 @@ jobs:
         run: echo "name=$(git describe --tags --abbrev=0)" >> $GITHUB_OUTPUT
       
       - name: Build and push Docker image
-        run: bash build.sh
+        run: |
+          bash build.sh \
+            "${{ vars.LOGSTASH_SEC_ID }}" \
+            "${{ vars.POSTGRES_SEC_ID }}" \
+            "${{ secrets.PHASE_API_KEY }} \
+            "${{ secrets.AWS_ACCOINT_ID }}" \
+            "${{ secrets.AWS_REGION }}" \
+            "${{ steps.get_tag.outputs.name }}"
         
