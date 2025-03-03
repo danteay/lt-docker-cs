@@ -85,11 +85,5 @@ jobs:
       
       - name: Build and push Docker image
         run: |
-          bash build.sh \
-            "${{ vars.LOGSTASH_SEC_ID }}" \
-            "${{ vars.POSTGRES_SEC_ID }}" \
-            "${{ secrets.PHASE_API_KEY }} \
-            "${{ secrets.AWS_ACCOINT_ID }}" \
-            "${{ secrets.AWS_REGION }}" \
-            "${{ steps.get_tag.outputs.name }}"
+          bash build.sh "${{ vars.LOGSTASH_SEC_ID }}" "${{ vars.POSTGRES_SEC_ID }}" "${{ secrets.PHASE_API_KEY }} "${{ secrets.AWS_ACCOINT_ID }}" "${{ secrets.AWS_REGION }}" "${{ steps.get_tag.outputs.name }}"
         
