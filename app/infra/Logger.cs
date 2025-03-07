@@ -39,7 +39,7 @@ namespace app.infra
                 .MinimumLevel.Is(minLevel)
                 .WriteTo.Console(formatter);
 
-            if (Configuration.GetInstance.Get("STAGE") != "local")
+            if (Configuration.GetInstance.Get("STAGE") == "dev")
             {
                 // Execution inside container
                 var secrets = SecretsManager.GetInstance(secretName);

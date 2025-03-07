@@ -55,10 +55,10 @@ namespace app.infra
                 var port = secrets.MustGet("POSTGRES_PORT");
 
                 connectionString =
-                    $"Host={host};Database={database};Username={user};Password={password};Port={port}";
+                    $"Host={host};Database={database};Username={user};Password={password}";
+                
+                if (!string.IsNullOrEmpty(port)) connectionString += $";Port={port}";
             }
-
-            Console.WriteLine($"Using connection string: {connectionString}");
 
             optionsBuilder.UseNpgsql(connectionString);
         }
