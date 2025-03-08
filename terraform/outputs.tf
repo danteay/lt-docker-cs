@@ -1,8 +1,11 @@
-// Set outputs from ecr repository
 output "LtDockerCsRepositoryUrl" {
-  value = aws_ecr_repository.lt-docker-cs.repository_url
+  value = module.ecr.repository_url
 }
 
-output "LtDockerCsRepositoryArn" {
-  value = aws_ecr_repository.lt-docker-cs.arn
+output "ECSClusterName" {
+  value = module.ecs.cluster_name
+}
+
+output "LtDockerCsAlbDsnName" {
+  value = module.lt-docker-cs-service.alb_dns_name
 }

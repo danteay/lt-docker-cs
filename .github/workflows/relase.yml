@@ -86,10 +86,59 @@ jobs:
       - name: Build and push Docker image
         run: |
           bash build.sh \
-            "${{ vars.LOGSTASH_SEC_ID }}" \
             "${{ vars.POSTGRES_SEC_ID }}" \
             "${{ secrets.PHASE_API_KEY }}" \
             "${{ secrets.AWS_ACCOUNT_ID }}" \
             "${{ secrets.AWS_REGION }}" \
             "${{ steps.get_tag.outputs.name }}"
+          
+  update_service_version:
+    name: "Update service version"
+    runs-on: ubuntu-24.04
+    needs: build_docker
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: "${{ secrets.ACCESS_TOKEN }}"
+          ref: "main"
+
+      - name: Get latest tag
+        id: get_tag
+        run: echo "version=$(git describe --tags --abbrev=0)" >> $GITHUB_OUTPUT  
+          
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Set up AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+          
+      - name: Terraform Init
+        working-directory: terraform
+        run: terraform init
         
+      - name: Terraform Validate
+        working-directory: terraform
+        run: terraform validate -no-color
+        
+      - name: Terraform Plan
+        id: tf_plan
+        working-directory: terraform
+        run: terraform plan -no-color
+        continue-on-error: false
+        env:
+          IMAGE_TAG: ${{ steps.get_tag.outputs.version }}
+          
+      - name: Show Terraform Plan
+        run: echo "${{ steps.tf_plan.outputs.stdout }}"
+        
+      - name: Terraform Apply
+        working-directory: terraform
+        run: terraform apply -auto-approve -no-color
+        env:
+          IMAGE_TAG: ${{ steps.get_tag.outputs.version }}

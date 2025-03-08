@@ -7,6 +7,7 @@
 # keys and values.
 cat <<EOF
 {
-  "AWS_REGION": "$AWS_REGION"
+  "AWS_REGION": "$AWS_REGION",
+  "IMAGE_TAG": "$IMAGE_TAG"
 }
 EOF

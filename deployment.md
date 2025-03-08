@@ -30,77 +30,7 @@ y seguir los siguientes pasos:
 
 - Ir a la consola de AWS y entrar a `IAM`
 - Ir a `Policies` y crear una nueva con el boton `Create policy`
-- Seleccionar `JSON` y pegar el siguiente JSON:
-
-  ```json
-  {
-      "Version": "2012-10-17",
-      "Statement": [
-          {
-              "Effect": "Allow",
-              "Action": [
-                  "ecr:DescribeRepositoryCreationTemplates",
-                  "ecr:UpdateRepositoryCreationTemplate",
-                  "ecr:BatchDeleteImage",
-                  "ecr:BatchGetRepositoryScanningConfiguration",
-                  "ecr:DeleteRepository",
-                  "ecr:TagResource",
-                  "ecr:BatchCheckLayerAvailability",
-                  "ecr:GetLifecyclePolicy",
-                  "ecr:DescribeImageScanFindings",
-                  "apigateway:*",
-                  "ecr:CreateRepository",
-                  "ecr:GetDownloadUrlForLayer",
-                  "ecr:PutImageScanningConfiguration",
-                  "ecr:DescribePullThroughCacheRules",
-                  "ecr:GetAuthorizationToken",
-                  "ecr:DeleteLifecyclePolicy",
-                  "ecr:PutImage",
-                  "ecr:CreateRepositoryCreationTemplate",
-                  "ecr:ValidatePullThroughCacheRule",
-                  "ecr:GetAccountSetting",
-                  "ecr:UntagResource",
-                  "ecs:*",
-                  "ecr:BatchGetImage",
-                  "ecr:DescribeImages",
-                  "ecr:StartLifecyclePolicyPreview",
-                  "ecr:PutAccountSetting",
-                  "ecr:UpdatePullThroughCacheRule",
-                  "ecr:InitiateLayerUpload",
-                  "ecr:PutImageTagMutability",
-                  "ecr:StartImageScan",
-                  "ecr:DescribeImageReplicationStatus",
-                  "ecr:ListTagsForResource",
-                  "ecr:UploadLayerPart",
-                  "ecr:CreatePullThroughCacheRule",
-                  "ecr:ListImages",
-                  "ecr:PutRegistryPolicy",
-                  "ecr:GetRegistryScanningConfiguration",
-                  "ecr:CompleteLayerUpload",
-                  "ecr:DescribeRepositories",
-                  "ecr:DeleteRepositoryPolicy",
-                  "ecr:ReplicateImage",
-                  "vpc-lattice:*",
-                  "ecr:GetRegistryPolicy",
-                  "ecr:PutLifecyclePolicy",
-                  "ecr:GetLifecyclePolicyPreview",
-                  "ecr:DescribeRegistry",
-                  "ecr:PutRegistryScanningConfiguration",
-                  "ecr:DeletePullThroughCacheRule",
-                  "ecr:BatchImportUpstreamImage",
-                  "ecr:SetRepositoryPolicy",
-                  "vpce:*",
-                  "ecr:DeleteRepositoryCreationTemplate",
-                  "ecr:DeleteRegistryPolicy",
-                  "ecr:GetRepositoryPolicy",
-                  "ecr:PutReplicationConfiguration"
-              ],
-              "Resource": "*"
-          }
-      ]
-  }
-  ```
-
+- Seleccionar `JSON` y copiar el contenido del archivo `cicd_user_policy.json` de la raiz del proyecto
 - Como Nombre de la politica poner `CICDDeployment`
 - Crear la politica con el boton `Create policy`
 - Ir a `Users` y crear un nuevo usuario con el boton `Create user`
@@ -127,16 +57,60 @@ aws configure
 # Default output format: json
 ```
 
+### Creacion de Service linked Role para ECS
+
+Para poder crear un cluster de ECS es necesario crear un Service linked role para ECS. Para crear el role, ejecuta el 
+siguiente comando:
+
+```sh
+aws iam create-service-linked-role --aws-service-name ecs.amazonaws.com
+```
+
+### Creacion de Service Linked Role para Elastic Load Balancer
+
+Para poder crear un Load Balancer en ECS es necesario crear un Service linked role para Elastic Load Balancer. Para 
+crear el role, ejecuta el siguiente comando:
+
+```sh
+aws iam create-service-linked-role --aws-service-name elasticloadbalancing.amazonaws.com
+```
+
+### Create DynamoDB table for remote state locking
+
+Para poder usar el remote state de Terraform es necesario crear una tabla de DynamoDB para el locking del estado. Para
+crear la tabla, ejecuta el siguiente comando:
+
+```sh
+aws dynamodb create-table \
+    --region <tu-region> \
+    --table-name lt-docker-cs-terraform-locks \
+    --attribute-definitions AttributeName=LockID,AttributeType=S \
+    --key-schema AttributeName=LockID,KeyType=HASH \
+    --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5
+````
+
+### Crear Bucket de S3 para el remote state
+
+Para poder usar el remote state de Terraform es necesario crear un bucket de S3 para almacenar el estado remoto. Para
+crear el bucket, ejecuta el siguiente comando:
+
+```sh
+aws s3api create-bucket --bucket lt-docker-cs-terraform-state --region <tu-region>
+```
+
 ### Creacion de infraestructura
 
 Para crear la infraestructura necesaria para el proyecto, ejecuta el siguiente comando:
 
 ```sh
-make tf_apply
+env AWS_REGION=<tu-region> make tf_apply
 ```
 
 Esto creara o seleccionara un workspace en terraform llamado `prod` en el cual se crearan los recursos necesarios para el
 proyecto dentro de AWS.
+
+Para finalizar descomentar del archivo `terraform/main.tf` la seccion correspondiente al modulo `lt-docker-cs-service`
+para habilitar el despliegue del servicio de ECS usando el pipeline de Github Actions.
 
 ### Configuración de Github Actions
 
@@ -171,12 +145,11 @@ Para configurar Github actions en necesario crear los siguientes secrets y varia
 - `AWS_SECRET_ACCESS_KEY`: Secret access key del usuario `cicd_user` creado en AWS
 - `AWS_REGION`: Region de AWS donde se crearan los recursos
 - `AWS_ACCOUNT_ID`: ID de la cuenta de AWS
-- `PHASE_API_KEY`: API key de Phase.dev para manejar los secrets
+- `PHASE_API_KEY`: API key de Phase.dev para manejar los secrets de produccion
 - `ACCESS_TOKEN`: Access token creado en Github para el pipeline
 
 ##### Variables
 
-- `LOGSTASH_SEC_ID`: ID del secret de logstash en Phase.dev
 - `POSTGRES_SEC_ID`: ID del secret de postgres en Phase.dev
 - `GIT_NAME`: Nombre del usuario de git para los commits (debe ser admin del repositorio)
 - `GIT_EMAIL`: Email del usuario de git para los commits (debe ser admin del repositorio)
@@ -191,4 +164,24 @@ del repositorio. Para deshabilitar el rule set sigue los siguientes pasos:
 - Ir a `Settings` y seleccionar `Rules` > `Rulesets`
 - Seleccionar la rule set que se desea modificar
 - En la seccion `Bypass list` agregar el elemento `Repository admin`
+
+### Eliminacion de recursos
+
+Para eliminar los recursos creados en AWS, ejecuta los siguientes pasos:
+
+- Entrar a la consola de AWS y en la seccion de ECR seleccionar el repositorio creado, posteriormente eliminar las imagenes
+  almacenadas en el repositorio.
+- Ejecutar el siguiente comando para eliminar los recursos creados en AWS:
+
+  ```sh
+  make tf_destroy
+  ```
+  
+- Eliminar los service linked roles creados en los pasos anteriores ejecutando los siguientes comandos:
+
+  ```sh
+  aws iam delete-service-linked-role --role-name AWSServiceRoleForECS
+  aws iam delete-service-linked-role --role-name AWSServiceRoleForElasticLoadBalancing
+  ```
+
 

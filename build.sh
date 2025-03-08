@@ -1,16 +1,14 @@
 #!/usr/bin/env bash
 
-LOGSTASH_SEC_ID=$1
-POSTGRES_SEC_ID=$2
-PHASE_API_KEY=$3
-AWS_ACCOUNT_ID=$4
-AWS_REGION=$5
-VERSION=$6
+POSTGRES_SEC_ID=$1
+PHASE_API_KEY=$2
+AWS_ACCOUNT_ID=$3
+AWS_REGION=$4
+VERSION=$5
 
 docker build \
     --build-arg stage=prod \
     --build-arg port=5001 \
-    --build-arg logstashConfigs="$LOGSTASH_SEC_ID" \
     --build-arg phaseApiKey="$PHASE_API_KEY" \
     --build-arg postgresSecretName="$POSTGRES_SEC_ID" \
     -t lt-docker-cs app

@@ -4,5 +4,7 @@
 # of interest. The output must be valid JSON, with strings for both
 # keys and values.
 ConvertTo-Json @{
-    foo = $Env:foo
+#    foo = $Env:foo
+    AWS_REGION = $Env:AWS_REGION
+    IMAGE_TAG = $Env:IMAGE_TAG
 }

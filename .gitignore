@@ -6,5 +6,4 @@ Debug/
 **/obj/
 .idea/
 .vscode/
-DS_Store
-**/.terraform/
+.DS_Store
