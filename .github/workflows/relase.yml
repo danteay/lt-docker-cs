@@ -124,6 +124,7 @@ jobs:
         
       - name: Terraform Validate
         working-directory: terraform
+        continue-on-error: false
         run: terraform validate -no-color
         
       - name: Terraform Plan
