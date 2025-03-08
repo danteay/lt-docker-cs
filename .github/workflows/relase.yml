@@ -122,6 +122,10 @@ jobs:
         working-directory: terraform
         run: terraform init
         
+      - name: Terraform workspace select
+        working-directory: terraform
+        run: terraform workspace select prod || terraform workspace new prod
+        
       - name: Terraform Validate
         working-directory: terraform
         continue-on-error: false
