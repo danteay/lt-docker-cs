@@ -40,7 +40,7 @@ tf_apply: tf_init tf_workspace ## Apply the Terraform plan
 
 tf_destroy: tf_init tf_workspace ## Destroy the Terraform plan
 	@echo "Destroying Terraform configuration..."
-	terraform -chdir=terraform destroy
+	terraform -chdir=terraform destroy -auto-approve
 
 net_format: ## format .Net Core code
 	@echo "Formatting .Net Core code..."
