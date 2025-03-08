@@ -18,6 +18,5 @@ docker build \
 docker tag lt-docker-cs:latest "$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/lt-docker-cs:latest"
 docker tag lt-docker-cs:latest "$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/lt-docker-cs:$VERSION"
 
-
 docker push "$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/lt-docker-cs:latest"
 docker push "$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/lt-docker-cs:$VERSION"
