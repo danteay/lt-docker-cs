@@ -175,9 +175,6 @@ jobs:
         continue-on-error: false
         env:
           IMAGE_TAG: ${{ steps.get_tag.outputs.version }}
-          
-      - name: Show Terraform Plan
-        run: echo "${{ steps.tf_plan.outputs.stdout }}"
         
       - name: Terraform Apply
         working-directory: terraform
