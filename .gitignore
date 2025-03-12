@@ -8,3 +8,4 @@ Debug/
 .vscode/
 .DS_Store
 envs.sh
+.envrc

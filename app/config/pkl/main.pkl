@@ -2,8 +2,8 @@ module pkl.main
 
 import "classes.pkl" as classes
 
-local phaseApiKey = read?("env:PHASE_API_KEY") ?? ""
-local postgresSecId = read?("env:POSTGRES_SEC_ID") ?? ""
+local phaseApiKey = read("env:PHASE_API_KEY")
+local postgresSecId = read("env:POSTGRES_SEC_ID")
 local logstashSecId = read?("env:ELASTIC_SEC_ID") ?? ""
 local stage = read?("env:STAGE") ?? "local"
 

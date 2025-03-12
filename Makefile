@@ -54,7 +54,6 @@ run_elk: ## Run ELK stack
 run_dev: run_elk ## Run development environment
 	@echo "Running development environment..."
 
-	source ./envs.sh
 	env STAGE=dev pkl eval -f yaml app/config/pkl/main.pkl > app/config/dev.yml
 	docker-compose up postgres -d
 	docker-compose up app --build

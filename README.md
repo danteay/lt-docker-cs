@@ -42,11 +42,19 @@ secretos dentro de Phase.dev. Para configurar los secretos sigue los siguientes 
 
 ### Ejecucion del ambiente de desarrollo
 
+#### Inicializar el proyecto .NET Core usando Nix
+
+Todas las dependencias del proyecto se gestionarán con Nix. Para inicializar el proyecto .NET Core, ejecuta el siguiente comando:
+
+```sh
+nix develop --impure
+```
+
 #### Configurar las variables de entorno
 
 Para que el proyecto funcione correctamente es necesario configurar variables de entorno relacionadas con los secretos
 
-Para esto crea un archivo envs.sh en la raiz del proyecto con el siguiente contenido:
+Para esto crea un archivo `.envrc` en la raiz del proyecto con el siguiente contenido:
 
 ```sh
 export PHASE_API_KEY="<your-phase-dev-api-key-for-development>"
@@ -54,14 +62,11 @@ export POSTGRES_SEC_ID="<postgres-app-id>"
 export ELASTIC_SEC_ID="<elastic-app-id>"
 ```
 
-Este archivo sera cargado automaticamente cuando se ejecute el comando `make run_dev`
-
-#### Inicializar el proyecto .NET Core usando Nix
-
-Todas las dependencias del proyecto se gestionarán con Nix. Para inicializar el proyecto .NET Core, ejecuta el siguiente comando:
+Este archivo sera cargado automaticamente al entrar al directo en la consola. Si direnv marca un error al intentar cargar
+el archivo `.envrc` ejecuta el siguiente comando:
 
 ```sh
-nix develop --impure
+direnv allow .
 ```
 
 #### Configurar un contenedor Docker para la base de datos

@@ -18,6 +18,8 @@
             
             dotnetCorePackages.sdk_9_0-bin
             
+            direnv
+            
             docker
             docker-compose
   
@@ -31,6 +33,10 @@
             commitizen
             husky
           ];
+          
+          shellHook = ''
+            eval "$(direnv hook zsh)"
+          '';
         };
       }
     );
