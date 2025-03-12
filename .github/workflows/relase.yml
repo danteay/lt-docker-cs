@@ -17,7 +17,7 @@ env:
 
 jobs:
   bump_version:
-    if: "!startsWith(github.event.head_commit.message, 'bump:')"
+    if: "!startsWith(github.event.head_commit.message, 'bump:') && !startsWith(github.event.head_commit.message, 'ci:')"
     runs-on: ubuntu-24.04
     name: "Bump version"
     steps:
